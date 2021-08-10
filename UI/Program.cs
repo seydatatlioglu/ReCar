@@ -35,10 +35,23 @@ namespace UI
         private static void CarTest()
         {
             CarManager carManager = new CarManager(new EfCarDal());
-            foreach (var car in carManager.GetCarDetails())
+            var result = carManager.GetCarDetails();
+            if (result.Success==true)
+            {
+                foreach (var car in result.Data)
+                {
+                    Console.WriteLine(car.BrandName + " -- "+car.CarName);
+                }
+            }
+
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+            
             
 
-                Console.WriteLine(car.Id+" / "+car.BrandName);
+               
             
         }
     }

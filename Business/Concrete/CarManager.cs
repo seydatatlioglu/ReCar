@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstarct;
 using Entity.Concrete;
 using Entity.DTOs;
@@ -17,29 +19,49 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public List<Car> GelAllByBrandId(int id)
+        public IDataResult<List<Car>> GelAllByBrandId(int id)
         {
             throw new NotImplementedException();
         }
 
-        public List<Car> GelAllByColorId(int id)
+        public IDataResult<List<Car>> GelAllByColorId(int id)
         {
             throw new NotImplementedException();
         }
 
-        public List<Car> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
-            return _carDal.GetAll();
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorDataResult<List<Car>>(Messages.MainTenanceTime);
+            }
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarListed);
+
         }
 
-        public List<Car> GetAllByDailyPrice(decimal min, decimal max)
+        public IDataResult<List<Car>> GetAllByDailyPrice(decimal min, decimal max)
         {
-            return _carDal.GetAll(c => c.DailyPrice >= min && c.DailyPrice <= max);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(p => p.DailyPrice >= min && p.DailyPrice <= max));
         }
 
-        public List<CarDetailsDto> GetCarDetails()
+        public IDataResult<List<CarDetailsDto>> GetCarDetails()
         {
-            return _carDal.GetCarDetails();
+            if (DateTime.Now.Hour == 12)
+            {
+                return new ErrorDataResult<List<CarDetailsDto>>(Messages.MainTenanceTime);
+            }
+            return new SuccessDataResult<List<CarDetailsDto>>(_carDal.GetCarDetails());
         }
+
+        public IResult Add(Car car)
+        {
+            if (car.Description.Length < 2)
+            {
+                return new ErrorResult(Messages.BrandNameInvalid);
+            }
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarListed);
+        }
+        
     }
 }
