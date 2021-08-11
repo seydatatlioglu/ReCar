@@ -1,5 +1,6 @@
 ﻿using Business.Concrete;
 using DataAccess.Concrete.EntityFramework;
+using Entity.Concrete;
 using System;
 
 namespace UI
@@ -8,29 +9,72 @@ namespace UI
     {
         static void Main(string[] args)
         {
-            CarTest();
+            //CarTest();
             //BrandTest();
             //ColorTest();
 
+            //RentalTest();
+
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+
+            var result = rentalManager.Add(new Rental
+            {
+                CarId = 4,
+                CustomerId = 6,
+                RentDate = new DateTime(2021, 08, 08,15,20,20),
+
+
+
+            });
+            Console.WriteLine(result.Message);
+
+
+
+
+
+
         }
 
-        private static void ColorTest()
+ 
+
+
+        private static void RentalTest()
         {
-            ColorManager colorManager = new ColorManager(new EfColorDal());
-            foreach (var brand in colorManager.GetAll())
+            RentalManager rentalManager = new RentalManager(new EfRentalDal());
+            var result = rentalManager.GetAll();
+         
+            if (result.Success == true)
             {
-                Console.WriteLine(brand.ColorName);
+                foreach (var rent in result.Data)
+                {
+                    Console.WriteLine(rent.RentDate + " -- " + rent.ReturnDate);
+                }
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
             }
         }
 
-        private static void BrandTest()
-        {
-            BrandManager brandManager = new BrandManager(new EfBrandDal());
-            foreach (var brand in brandManager.GetAll())
-            {
-                Console.WriteLine(brand.BrandName);
-            }
-        }
+        //private static void ColorTest()
+        //{
+        //    ColorManager colorManager = new ColorManager(new EfColorDal());
+        //    foreach (var brand in colorManager.GetAll())
+        //    {
+        //        Console.WriteLine(brand.ColorName);
+        //    }
+        //}
+
+        //private static void BrandTest()
+        //{
+        //    BrandManager brandManager = new BrandManager(new EfBrandDal());
+        //    foreach (var brand in brandManager.GetAll())
+        //    {
+        //        Console.WriteLine(brand.BrandName);
+        //    }
+        //}
+
+
 
         private static void CarTest()
         {
