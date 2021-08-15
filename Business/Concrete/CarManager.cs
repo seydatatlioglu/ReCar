@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstarct;
 using Entity.Concrete;
@@ -53,15 +55,18 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarDetailsDto>>(_carDal.GetCarDetails(),Messages.CarListed);
         }
 
+
+
+        [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-            if (car.Description.Length < 2)
-            {
-                return new ErrorResult(Messages.BrandNameInvalid);
-            }
+            
             _carDal.Add(car);
             return new SuccessResult(Messages.CarAdded);
         }
+
+
+
 
         public IResult Delete(Car car)
         {
