@@ -30,6 +30,7 @@ namespace Business.Constants
         public static string CustomerNameInvalid = "Müşteri ismi en az 3 karakter olmalı..";
         public static string CustomerNameNull = "Bu isimde bir müşteri yok..";
         public static string CustomerListed = "Müşteriler listelendi..";
+        internal static string CarImageLimitExceeded="maximum 5 öge eklenebilir";
 
         //**********RENTAL*********
         public const string RentalCarNotDelivered = "Kiralanacak araba teslim edilmemiş";
