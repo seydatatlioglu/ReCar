@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules;
 using Core.Aspects.Autofac.Validation;
@@ -56,15 +57,14 @@ namespace Business.Concrete
         }
 
 
-
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
             
-            _carDal.Add(car);
+            _carDal.Add(car); 
             return new SuccessResult(Messages.CarAdded);
         }
-
 
 
 
@@ -92,5 +92,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.Id == id),Messages.CarListed);
         }
+
+        
     }
 }

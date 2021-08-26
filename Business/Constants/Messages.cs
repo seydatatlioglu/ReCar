@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Business.Constants
@@ -16,11 +17,15 @@ namespace Business.Constants
         //********BRAND*******
 
         public static string BrandNameInvalid = "marka ismi geçersiz..";
-        internal static string BrandListed="markalar listelendi";
+        public static string BrandAdded = "marka eklendi";
+        public static string BrandListed="markalar listelendi";
 
         //********COLOR*******
 
         public static string ColorListed = "Renkler listelendi..";
+        public static string ColorAdded="renk skalaya eklendi";
+        public static string ColorNonFound="renk sklaadan çıkarıldı";
+        public static string ColorUpdated="renk bilgisi güncellendi";
 
         //********CUSTOMER*******
 
@@ -30,7 +35,10 @@ namespace Business.Constants
         public static string CustomerNameInvalid = "Müşteri ismi en az 3 karakter olmalı..";
         public static string CustomerNameNull = "Bu isimde bir müşteri yok..";
         public static string CustomerListed = "Müşteriler listelendi..";
-        internal static string CarImageLimitExceeded="maximum 5 öge eklenebilir";
+        public static string CarImageLimitExceeded="maximum 5 öge eklenebilir";
+        public static string AuthorizationDenied="yetkiniz yok...";
+
+
 
         //**********RENTAL*********
         public const string RentalCarNotDelivered = "Kiralanacak araba teslim edilmemiş";

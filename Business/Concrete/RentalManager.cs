@@ -1,5 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstarct;
 using Entity.Concrete;
@@ -17,27 +20,16 @@ namespace Business.Concrete
         {
             _rentalDal = rentalDal;
         }
-
+        [ValidationAspect(typeof(RentalVlidator))]
         public IResult Add(Rental rental)
         {
-            bool available = true;
-
-            foreach (var item in _rentalDal.GetAll())
+            IResult result = BusinessRules.Run(IsCarDelivered(rental.CarId));
+            if (result!=null)
             {
-                if (item.CarId == rental.CarId || item.ReturnDate == null)
-                {
-                    available = false;
-                    return new ErrorResult(Messages.RentalCarNotDelivered);
-                }
-                
+                return result;
             }
-            if (available)
-            {
-                _rentalDal.Add(rental);
-                return new SuccessResult(Messages.RentalAdded);
-            }
-
-            return new ErrorResult(Messages.RentalCarNotDelivered);
+             _rentalDal.Add(rental);
+             return new SuccessResult(Messages.RentalAdded);
         }
 
         public IResult Delete(Rental rental)
@@ -51,9 +43,11 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(), Messages.RentalsListed);
         }
 
+        [ValidationAspect(typeof(RentalVlidator))]
         public IDataResult<Rental> GetById(int id)
         {
-            return new SuccessDataResult<Rental>(_rentalDal.Get(r => r.CarId == id), Messages.GetRental);
+          
+            return new SuccessDataResult<Rental>(_rentalDal.Get(r => r.Id== id), Messages.GetRental);
         }
 
         public IResult Update(Rental rental)
@@ -62,13 +56,18 @@ namespace Business.Concrete
             return new SuccessResult(Messages.RentalUpdated);
         }
 
-        private bool IsCarDelivered(int id)
+        private IResult IsCarDelivered(int id)
         {
             var result = _rentalDal.Get(r => r.CarId == id && r.ReturnDate == null);
             if (result == null)
-                return true;
-
-            return false;
+            {
+                return new SuccessResult();
+            }
+            return new ErrorResult(Messages.RentalCarNotDelivered);
+                
         }
+      
+
+
     }
 }
