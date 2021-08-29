@@ -2,6 +2,8 @@
 using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstarct;
@@ -34,10 +36,10 @@ namespace Business.Concrete
 
         public IDataResult<List<Car>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorDataResult<List<Car>>(Messages.MainTenanceTime);
-            }
+            //if (DateTime.Now.Hour == 22)
+            //{
+            //    return new ErrorDataResult<List<Car>>(Messages.MainTenanceTime);
+            //}
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarListed);
 
         }
@@ -49,21 +51,17 @@ namespace Business.Concrete
 
         public IDataResult<List<CarDetailsDto>> GetCarDetails()
         {
-            if (DateTime.Now.Hour == 12)
-            {
-                return new ErrorDataResult<List<CarDetailsDto>>(Messages.MainTenanceTime);
-            }
             return new SuccessDataResult<List<CarDetailsDto>>(_carDal.GetCarDetails(),Messages.CarListed);
         }
 
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(CarValidator))]
-        public IResult Add(Car car)
+        public IDataResult<Car> Add(Car car)
         {
-            
+          
             _carDal.Add(car); 
-            return new SuccessResult(Messages.CarAdded);
+            return new SuccessDataResult<Car>(car,Messages.CarAdded);
         }
 
 
@@ -78,6 +76,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarDeleted);
         }
 
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Update(Car car)
         {
             if (car.Description.Length < 2)
@@ -88,11 +87,18 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarUpdated);
         }
 
+        [CacheAspect]
         public IDataResult<List<Car>> GelAllById(int id)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.Id == id),Messages.CarListed);
         }
 
-        
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Car car)
+        {
+            _carDal.Update(car);
+            _carDal.Add(car);
+            return new SuccessResult(Messages.CarUpdated);
+        }
     }
 }

@@ -37,6 +37,7 @@ namespace Business.Constants
         public static string CustomerListed = "Müşteriler listelendi..";
         public static string CarImageLimitExceeded="maximum 5 öge eklenebilir";
         public static string AuthorizationDenied="yetkiniz yok...";
+       
 
 
 

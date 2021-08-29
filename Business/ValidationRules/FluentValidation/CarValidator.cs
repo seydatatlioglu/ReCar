@@ -10,7 +10,7 @@ namespace Business.ValidationRules
     {
         public CarValidator()
         {
-            RuleFor(c => c.Id).GreaterThan(0); //girilen id değeri odan büyük olmalı
+            //RuleFor(c => c.Id).GreaterThan(0); //girilen id değeri odan büyük olmalı
             RuleFor(c => c.DailyPrice).GreaterThan(0);
 
             //RuleFor(p => p.B).Must(StartWithA).WithMessage("ürünler A harfi ile başlamalı"); //kendi kodumuzu metot halinde oluşturduk
